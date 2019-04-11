@@ -571,7 +571,7 @@ outsideTemperature = 0.0
 crc_check = -1
 import AM2315
 try:
- 	am2315 = AM2315.AM2315()
+ 	am2315 = AM2315.AM2315(powerpin=20)
 	outsideHumidity, outsideTemperature, crc_check = am2315.read_humidity_temperature_crc() 
 	print "outsideTemperature: %0.1f C" % outsideTemperature
     	print "outsideHumidity: %0.1f %%" % outsideHumidity
@@ -1105,7 +1105,7 @@ def sampleWeather():
     		    ToutsideHumidity, ToutsideTemperature, crc_check = am2315.read_humidity_temperature_crc()
                 except:
                      if am2315 is None:
-		        am2315 = AM2315.AM2315()
+		        am2315 = AM2315.AM2315(powerpin=20)
                         print ("am2315 None Error Detected")
                      crc_check = -1
 
