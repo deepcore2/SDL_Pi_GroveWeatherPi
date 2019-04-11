@@ -12,7 +12,7 @@ except ImportError:
                 import config
 
 
-DEBUGBLYNK = False 
+DEBUGBLYNK = True 
 
 def blynkInit():
     # initalize button states
