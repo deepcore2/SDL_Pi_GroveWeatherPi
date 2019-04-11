@@ -19,7 +19,7 @@ AM2315_I2CADDR = 0x5C
 AM2315_READREG = 0x03
 MAXREADATTEMPT = 10
 
-AM2315DEBUG = False
+AM2315DEBUG = True
 
 class AM2315:
     """Base functionality for AM2315 humidity and temperature sensor. """
