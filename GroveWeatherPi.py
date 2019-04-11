@@ -11,7 +11,7 @@
 # imports
 
 GWPVERSION = "3.16"
-GWPDEBUG = False
+GWPDEBUG = True
 
 
 import sys
