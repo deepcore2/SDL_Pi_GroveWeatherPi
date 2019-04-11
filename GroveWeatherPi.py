@@ -1132,7 +1132,7 @@ def sampleWeather():
 
 		try:
 			print "--Sending Data to WeatherUnderground--"
-			WeatherUnderground.sendWeatherUndergroundData( as3935LightningCount, as3935, as3935LastInterrupt, as3935LastDistance, as3935LastStatus, currentWindSpeed, currentWindGust, totalRain, bmp180Temperature, bmp180SeaLevel, bmp180Altitude,  bmp180SeaLevel, outsideTemperature, outsideHumidity, crc_check, currentWindDirection, currentWindDirectionVoltage, HTUtemperature, HTUhumidity, rain60Minutes)
+			WeatherUnderground.sendWeatherUndergroundData( as3935LightningCount, as3935, as3935LastInterrupt, as3935LastDistance, as3935LastStatus, currentWindSpeed, currentWindGust, totalRain, bmp180Temperature, bmp180SeaLevel, bmp180Altitude,  bmp180SeaLevel, outsideTemperature, outsideHumidity, crc_check, currentWindDirection, currentWindDirectionVoltage, HTUtemperature, HTUhumidity, rain60Minutes, SunlightVisible, SunlightUVIndex)
 		except:
 			print "--WeatherUnderground Data Send Failed"
 
@@ -1804,7 +1804,21 @@ if (config.WXLink_Present == False):
 
 
 while True:
-	
+
+	# Check for new day.
+	today = datetime.now().day
+	if 'yesterday' in locals():				# Not the first run
+		if today != yesterday:		# A new day has begun
+			# Reset daily rain count
+			print "Reset rain count"
+			totalRain = 0
+			yesterday = today
+	else:					# First run, define yesterday
+		print "First run, define yesterday/initialize variables..."
+		yesterday = today
+		totalRain = 0
+	# New day can start...
+
 	# process Interrupts from Lightning
 
 	if (as3935Interrupt == True):
