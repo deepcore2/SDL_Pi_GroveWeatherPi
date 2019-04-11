@@ -22,7 +22,7 @@ def blynkInit():
 
         r = requests.get(config.BLYNK_URL+config.BLYNK_AUTH+'/update/V5?value=0')
         if (state.runOLED == True):
-            r = requests.get(config.BLYNK_URL+config.BLYNK_AUTH+'/update/V6?value=1')
+            r = requests.get(config.BLYNK_URL+config.BLYNK_AUTH+'/update/V6?value=0')
         else:        
             r = requests.get(config.BLYNK_URL+config.BLYNK_AUTH+'/update/V6?value=0')
         r = requests.get(config.BLYNK_URL+config.BLYNK_AUTH+'/update/V30?value=0')
