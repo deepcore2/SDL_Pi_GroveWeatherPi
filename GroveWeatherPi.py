@@ -91,7 +91,7 @@ config.SolarPower_Mode = True;
 
 config.TCA9545_I2CMux_Present = False
 config.SunAirPlus_Present = False
-config.AS3935_Present = False
+config.AS3935_Present = True
 config.DS3231_Present = False
 config.BMP280_Present = False
 config.FRAM_Present = False
@@ -529,8 +529,8 @@ if (config.Lightning_Mode == True):
                 #i2ccommand = "sudo i2cdetect -y 1"
                 #output = subprocess.check_output (i2ccommand,shell=True, stderr=subprocess.STDOUT )
                 #print output
-                as3935.set_noise_floor(0)
-                as3935.calibrate(tun_cap=0x0F)
+                as3935.set_noise_floor(3)
+                as3935.calibrate(tun_cap=0x02)
 
         # back to BUS0
         if (config.TCA9545_I2CMux_Present):
