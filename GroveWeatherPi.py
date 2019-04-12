@@ -456,7 +456,7 @@ def process_as3935_interrupt():
 	as3935LastStatus = "Disturber detected - masking"
         if (config.USEBLYNK):
             updateBlynk.blynkStatusTerminalUpdate("AS3935: Disturber detected - masking")
-        as3935.set_mask_disturber(True)
+        as3935.set_mask_disturber(False)
     elif reason == 0x08:
         now = datetime.now().strftime('%H:%M:%S - %Y/%m/%d')
         distance = as3935.get_distance()
