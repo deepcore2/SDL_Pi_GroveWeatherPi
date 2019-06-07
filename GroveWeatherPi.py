@@ -549,7 +549,8 @@ def handle_as3935_interrupt(channel):
 
 
 # define Interrupt Pin for AS3935
-as3935pin = 16 
+#as3935pin = 16
+as3935pin = 13
 
 #GPIO.setup(as3935pin, GPIO.IN)
 GPIO.setup(as3935pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
