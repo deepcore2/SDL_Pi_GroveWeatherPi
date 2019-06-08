@@ -1105,7 +1105,7 @@ def sampleWeather():
     		    ToutsideHumidity, ToutsideTemperature, crc_check = am2315.read_humidity_temperature_crc()
                 except:
                      if am2315 is None:
-		        am2315 = AM2315.AM2315()
+		        am2315 = AM2315.AM2315(powerpin=20)
                         print ("am2315 None Error Detected")
                      crc_check = -1
 
