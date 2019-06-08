@@ -14,6 +14,7 @@ GWPVERSION = "3.17PH"
 GWPDEBUG = False
 
 
+
 import sys
 import time
 from datetime import datetime
@@ -91,7 +92,7 @@ config.SolarPower_Mode = True;
 
 config.TCA9545_I2CMux_Present = False
 config.SunAirPlus_Present = False
-config.AS3935_Present = False
+config.AS3935_Present = True
 config.DS3231_Present = False
 config.BMP280_Present = False
 config.FRAM_Present = False
@@ -456,7 +457,7 @@ def process_as3935_interrupt():
 	as3935LastStatus = "Disturber detected - masking"
         if (config.USEBLYNK):
             updateBlynk.blynkStatusTerminalUpdate("AS3935: Disturber detected - masking")
-        as3935.set_mask_disturber(True)
+        as3935.set_mask_disturber(False)
     elif reason == 0x08:
         now = datetime.now().strftime('%H:%M:%S - %Y/%m/%d')
         distance = as3935.get_distance()
@@ -529,8 +530,8 @@ if (config.Lightning_Mode == True):
                 #i2ccommand = "sudo i2cdetect -y 1"
                 #output = subprocess.check_output (i2ccommand,shell=True, stderr=subprocess.STDOUT )
                 #print output
-                as3935.set_noise_floor(0)
-                as3935.calibrate(tun_cap=0x0F)
+                as3935.set_noise_floor(3)
+                as3935.calibrate(tun_cap=0x02)
 
         # back to BUS0
         if (config.TCA9545_I2CMux_Present):
@@ -549,7 +550,8 @@ def handle_as3935_interrupt(channel):
 
 
 # define Interrupt Pin for AS3935
-as3935pin = 16
+#as3935pin = 16
+as3935pin = 13
 
 #GPIO.setup(as3935pin, GPIO.IN)
 GPIO.setup(as3935pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
