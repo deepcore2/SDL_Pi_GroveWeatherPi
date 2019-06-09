@@ -46,6 +46,7 @@ sys.path.append('./RaspberryPi-AS3935/RPi_AS3935')
 sys.path.append('./SDL_Pi_INA3221')
 sys.path.append('./SDL_Pi_TCA9545')
 sys.path.append('./SDL_Pi_SI1145')
+sys.path.append('./TSL2591')
 sys.path.append('./graphs')
 sys.path.append('./SDL_Pi_HDC1000')
 sys.path.append('./SDL_Pi_AM2315')
@@ -131,6 +132,10 @@ try:
 except:
 	print "Bad SI1145 Installation"
 
+try:
+	import TSL2591
+except:
+	print "Bad TSL2591 Installation"
 
 
 def returnStatusLine(device, state):
@@ -311,6 +316,30 @@ except:
 block1 = ""
 block2 = ""
 
+###############
+
+# TSL2591 Sunlight Sensor Setup
+
+################
+
+# turn I2CBus 3 on
+if (config.TCA9545_I2CMux_Present):
+	 tca9545.write_control_register(TCA9545_CONFIG_BUS3)
+
+try:
+    tsl2591 = TSL2591.Tsl2591()
+    int_time=TSL2591.INTEGRATIONTIME_100MS
+    gain=TSL2591.GAIN_LOW
+    tsl2591.set_gain(gain)
+    tsl2591.set_timing(int_time)
+    full, ir = tsl2591.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
+    lux = tsl2591.calculate_lux(full, ir)  # convert raw values to lux
+    print (lux, full, ir)
+    print ()
+    config.TSL2591_Present = True
+
+except:
+    config.TSL2591_Present = False
 
 ###############
 
@@ -1050,29 +1079,41 @@ def sampleWeather():
 		HTUhumidity =  hdc1080.readHumidity()
 
 
+    # use TSL2591 first
 
-	if (config.Sunlight_Present):
-		################
-		# turn I2CBus 3 on
-		if (config.TCA9545_I2CMux_Present):
-	 		tca9545.write_control_register(TCA9545_CONFIG_BUS3)
+    if (config.TSL2591_Present):
+    	################
+    	# turn I2CBus 3 on
+	    if (config.TCA9545_I2CMux_Present):
+	 	tca9545.write_control_register(TCA9545_CONFIG_BUS3)
 
-        	SunlightVisible = SI1145Lux.SI1145_VIS_to_Lux(Sunlight_Sensor.readVisible())
-        	SunlightIR = SI1145Lux.SI1145_IR_to_Lux(Sunlight_Sensor.readIR())
-        	SunlightUV = Sunlight_Sensor.readUV()
-        	SunlightUVIndex = SunlightUV / 100.0
-		################
-		# turn I2CBus 0 on
-		if (config.TCA9545_I2CMux_Present):
-	 		tca9545.write_control_register(TCA9545_CONFIG_BUS0)
+        full, ir = tsl2591.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
+        lux = tsl2591.calculate_lux(full, ir)  # convert raw values to lux
+        SunlightVisible = lux
+        SunlightIR = ir
+        SunlightUV = 0
+        SunlightUVIndex = 0.0
+    else:
 
-	else:
-        	SunlightVisible = 0
-        	SunlightIR = 0
-        	SunlightUV = 0
-        	SunlightUVIndex = 0.0
+		if (config.Sunlight_Present):
+			################
+			# turn I2CBus 3 on
+			if (config.TCA9545_I2CMux_Present):
+		 		tca9545.write_control_register(TCA9545_CONFIG_BUS3)
+	        	SunlightVisible = SI1145Lux.SI1145_VIS_to_Lux(Sunlight_Sensor.readVisible())
+   		     	SunlightIR = SI1145Lux.SI1145_IR_to_Lux(Sunlight_Sensor.readIR())
+        		SunlightUV = Sunlight_Sensor.readUV()
+        		SunlightUVIndex = SunlightUV / 100.0
+			################
+			# turn I2CBus 0 on
+			if (config.TCA9545_I2CMux_Present):
+		 		tca9545.write_control_register(TCA9545_CONFIG_BUS0)
 
-
+		else:
+	        	SunlightVisible = 0
+	        	SunlightIR = 0
+	        	SunlightUV = 0
+   		     	SunlightUVIndex = 0.0
 
 	if (as3935LastInterrupt == 0x00):
 		as3935InterruptStatus = "----No Lightning detected---"
